@@ -55,7 +55,8 @@ const poolPromise = new DB.ConnectionPool(config)
     .input("createdate",DB.VarChar,clientModel.hhsregistration.createdate)
     .input("deviceid",DB.VarChar,clientModel.hhsregistration.deviceid)
     .query("Select * from hhsregistration where phonenumber=@phonenumber");
-    if (resp.recordset.length == 0) {
+    if (resp.recordset.length == 0)
+  {
       let resp1= await selectReq1
       .input("fullname",DB.VarChar,clientModel.hhsregistration.fullname)
     .input("gender",DB.Char,clientModel.hhsregistration.gender)
@@ -69,17 +70,71 @@ const poolPromise = new DB.ConnectionPool(config)
       return {
         status: "Success",
         Message: "Successfully Registered"
-           }       }
-           else{
+           }
+
+     }
+           else
+           {
             return {
               status: "Already Registered",
-                   }
+            }
 
-           }
+      }
 }
 
 
-    
+//hhscalibration
+
+exports.dbhhcalibration = async function (clientModel) {
+  let pool = await poolPromise;
+  let insertreq1 = await pool.request();
+  let selectReq1 = await pool.request();
+  
+   let resp = await selectReq1
+   .input("deviceid",DB.Int,clientModel.hhssoilconfig.deviceid)
+   .query("Select * from hhssoilconfig where deviceid=@deviceid");
+        if (resp.recordset.length > 0) {
+      return {
+      status: "Success",
+      Message: " Already device exist "
+    }   
+  } 
+
+  else
+  {
+   return {
+     status: "Plese select Soil type",
+   }
+
+}
+}   
+  
+
+//hhssoildisplay
+
+exports.dbsoildisplay = async function (clientModel){
+  let pool = await poolPromise;
+  let selectReq1 = await pool.request();
+ 
+  let pullrecord1 = await selectReq1
+ .input("deviceid", DB.VarChar, clientModel.hhssoilconfig.deviceid)
+ .input("soiltype", DB.VarChar, clientModel.hhssoilconfig.soiltype)
+		
+ .query(`select  soiltype,Fieldcapacity,wiltingpoint,thresholdpoint,Threshold_percentage 
+        from hhssoilconfig where deviceid=@deviceid and soiltype=@soiltype`);
+  console.log(pullrecord1.recordset[0])
+
+         let result = {
+          "defaultsoilconfiguration" : pullrecord1.recordset[0]
+        };
+      return {
+        status: "Success",
+        Message: "Data Pulled",
+        data:result
+      };
+ }
+
+
 
 
 //hhsfarmerdetails
@@ -87,23 +142,22 @@ const poolPromise = new DB.ConnectionPool(config)
 exports.dbhhsfarmerdetails = async function (clientModel) {
   let pool = await poolPromise;
   let insertreq1 = await pool.request();
-  
-
-  
-  let resp1 = await insertreq1
-  .input("deviceid",DB.Int,clientModel.hhsfarmerdetails.deviceid)
-  .input("farmername",DB.VarChar,clientModel.hhsfarmerdetails.farmername)
-  .input("soiltype",DB.VarChar,clientModel.hhsfarmerdetails.soiltype)
-  .input("latitude", DB.Float, clientModel.hhsfarmerdetails.latitude)
-  .input("longitude",DB.Float,clientModel.hhsfarmerdetails.longitude)
-  .input("Fieldcapacity",DB.Float,clientModel.hhsfarmerdetails.Fieldcapacity)
-  .input("wiltingpoint",DB.Float,clientModel.hhsfarmerdetails.wiltingpoint)
-  .input("thresholdpoint",DB.Float,clientModel.hhsfarmerdetails.thresholdpoint)
-  .input("soilmoisture",DB.Float,clientModel.hhsfarmerdetails.soilmoisture)
-  .input("createddate",DB.Date,clientModel.hhsfarmerdetails.createddate)
-  .query(`Insert into hhsfarmerdetails  (deviceid,farmername,soiltype,latitude,longitude,Fieldcapacity,wiltingpoint,thresholdpoint,soilmoisture,createddate)  values(@deviceid,@farmername,@soiltype,@latitude,@longitude,@Fieldcapacity,@wiltingpoint,@thresholdpoint,@soilmoisture,GETDATE())`);
-  console.log("input data : " + JSON.stringify(clientModel));
-    return {
+ 
+     let resp1 = await insertreq1
+     .input("deviceid",DB.Int,clientModel.hhsfarmerdetails.deviceid)
+     .input("farmername",DB.VarChar,clientModel.hhsfarmerdetails.farmername)
+     .input("soiltype",DB.VarChar,clientModel.hhsfarmerdetails.soiltype)
+     .input("latitude", DB.Float, clientModel.hhsfarmerdetails.latitude)
+     .input("longitude",DB.Float,clientModel.hhsfarmerdetails.longitude)
+     .input("Fieldcapacity",DB.Float,clientModel.hhsfarmerdetails.Fieldcapacity)
+     .input("wiltingpoint",DB.Float,clientModel.hhsfarmerdetails.wiltingpoint)
+     .input("thresholdpoint",DB.Float,clientModel.hhsfarmerdetails.thresholdpoint)
+     .input("soilmoisture",DB.Float,clientModel.hhsfarmerdetails.soilmoisture)
+     .input("temperature",DB.Float,clientModel.hhsfarmerdetails.temperature)
+     .input("createddate",DB.Date,clientModel.hhsfarmerdetails.createddate)
+     .query(`Insert into hhsfarmerdetails  (deviceid,farmername,soiltype,latitude,longitude,Fieldcapacity,wiltingpoint,thresholdpoint,soilmoisture,temperature,createddate)  values(@deviceid,@farmername,@soiltype,@latitude,@longitude,@Fieldcapacity,@wiltingpoint,@thresholdpoint,@soilmoisture,@temperature,GETDATE())`);
+     console.log("input data : " + JSON.stringify(clientModel));
+     return {
       status: "Success",
       Message: " Data inserted "
         };
@@ -239,7 +293,8 @@ exports.dbhhssoilconfig = async function (clientModel) {
   .input("thresholdpoint",DB.Float,clientModel.hhssoilconfig.thresholdpoint)
   .input("Threshold_percentage",DB.Float,clientModel.hhssoilconfig.Threshold_percentage)
   .input("createddate",DB.Date,clientModel.hhssoilconfig.createddate)
-  .query("Select * from hhssoilconfig where deviceid=@deviceid");	
+  .input("soilid",DB.Int,clientModel.hhssoilconfig.soilid)
+  .query("Select * from hhssoilconfig where soilid=@soilid");	
   if (resp.recordset.length == 0) {
     
     // inserted data in soil config
@@ -254,7 +309,8 @@ exports.dbhhssoilconfig = async function (clientModel) {
   .input("thresholdpoint",DB.Float,clientModel.hhssoilconfig.thresholdpoint)
   .input("Threshold_percentage",DB.Float,clientModel.hhssoilconfig.Threshold_percentage)
   .input("createddate",DB.Date,clientModel.hhssoilconfig.createddate)
-  .query(`Insert into hhssoilconfig (deviceid,soiltype,latitude,longitude,Fieldcapacity,wiltingpoint,thresholdpoint,Threshold_percentage,createddate)  values(@deviceid,@soiltype,@latitude,@longitude,@Fieldcapacity,@wiltingpoint,@thresholdpoint,@Threshold_percentage,GETDATE())`);
+  .input("soilid",DB.Int,clientModel.hhssoilconfig.soilid)
+  .query(`Insert into hhssoilconfig (deviceid,soiltype,latitude,longitude,Fieldcapacity,wiltingpoint,thresholdpoint,Threshold_percentage,createddate,soilid)  values(@deviceid,@soiltype,@latitude,@longitude,@Fieldcapacity,@wiltingpoint,@thresholdpoint,@Threshold_percentage,GETDATE(),@soilid)`);
   console.log("input data : " + JSON.stringify(clientModel));
     return {
       status: "Success",
@@ -265,8 +321,8 @@ exports.dbhhssoilconfig = async function (clientModel) {
         //snapshort soil config
          else{
           let resp2= await selectReq3
-          .input("deviceid",DB.VarChar,clientModel.hhssoilconfig.deviceid)
-          .query(`Insert into snappshothhssoilconfig select deviceid,soiltype,latitude,longitude,Fieldcapacity,wiltingpoint,thresholdpoint,Threshold_percentage,createddate from hhssoilconfig  where deviceid=@deviceid `)
+          .input("soilid",DB.Int,clientModel.hhssoilconfig.soilid)
+          .query(`Insert into snappshothhssoilconfig select deviceid,soiltype,latitude,longitude,Fieldcapacity,wiltingpoint,thresholdpoint,Threshold_percentage,createddate from hhssoilconfig  where soilid=@soilid `)
           
           //update soil config
 
@@ -279,9 +335,10 @@ exports.dbhhssoilconfig = async function (clientModel) {
           .input("wiltingpoint",DB.Float,clientModel.hhssoilconfig.wiltingpoint)
           .input("thresholdpoint",DB.Float,clientModel.hhssoilconfig.thresholdpoint)
           .input("Threshold_percentage",DB.Float,clientModel.hhssoilconfig.Threshold_percentage)
+          .input("soilid",DB.Int,clientModel.hhssoilconfig.soilid)
           .input("modifydate",DB.Date,clientModel.hhssoilconfig.modifydate)
           .query(`update hhssoilconfig set soiltype=@soiltype,latitude=@latitude,longitude=@longitude,
-          Fieldcapacity=@Fieldcapacity,wiltingpoint=@wiltingpoint,thresholdpoint=@thresholdpoint,Threshold_percentage=@Threshold_percentage,modifydate=GETDATE() where deviceid=@deviceid`);
+          Fieldcapacity=@Fieldcapacity,wiltingpoint=@wiltingpoint,thresholdpoint=@thresholdpoint,Threshold_percentage=@Threshold_percentage,modifydate=GETDATE() where soilid=@soilid`);
           return {
             status: "Success",
             Message:"soil data updated ",
@@ -306,7 +363,7 @@ exports.dbhhspullsoildetails = async function (clientModel){
        // var msg = pullrecord1.recordset
 
         let result = {
-          "infodata" : pullrecord1.recordset[0]
+          "defaultsoilconfig" : pullrecord1.recordset[0]
         };
       return {
         status: "Success",
