@@ -162,9 +162,65 @@ exports.dbhhsfarmerdetails = async function (clientModel) {
       Message: " Data inserted "
         };
       }
-       
+    
+//hhsfarmerdetails
+exports.dbhhsfarmerd = async function (clientModel){
+  let pool = await poolPromise;
+  let selectReq1 = await pool.request();
+  
+        let pullrecord1 = await selectReq1
+        .query(`select * from hhsfarmerdetails`);
+        console.log(pullrecord1.recordset)
 
+        let result = {
+          "farmerdetails" : pullrecord1.recordset
+        };
+      return {
+        status: "Success",
+        Message: "Data Pulled",
+        data:result
+      };
+ }
 
+//hhsregistraiondetails
+
+ exports.dbhhsfarmreg = async function (clientModel){
+  let pool = await poolPromise;
+  let selectReq1 = await pool.request();
+  
+        let pullrecord1 = await selectReq1
+        .query(`select * from hhsregistration`);
+        console.log(pullrecord1.recordset)
+
+        let result = {
+          "registraion" : pullrecord1.recordset
+        };
+      return {
+        status: "Success",
+        Message: "Data Pulled",
+        data:result
+      };
+ }
+
+//hhssoilconfig
+
+exports.dbhhssoilc = async function (clientModel){
+  let pool = await poolPromise;
+  let selectReq1 = await pool.request();
+  
+        let pullrecord1 = await selectReq1
+        .query(`select *from hhssoilconfig`);
+        console.log(pullrecord1.recordset)
+
+        let result = {
+          "soilconfig" : pullrecord1.recordset
+        };
+      return {
+        status: "Success",
+        Message: "Data Pulled",
+        data:result
+      };
+ }
 
 //hhscontactusinfo
 
