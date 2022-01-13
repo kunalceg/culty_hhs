@@ -35,6 +35,31 @@ const poolPromise = new DB.ConnectionPool(config)
   .catch((err) =>
     console.log("Database Connection Failed! Bad Config: " + err)
   );
+//hhslogindashboard
+
+exports.dbhhslogin = async function (clientModel){
+  let pool = await poolPromise;
+  let selectReq1 = await pool.request();
+  let selectReq = await pool.request();
+  
+        let pullrecord1 = await selectReq1
+        .input("username",DB.VarChar,clientModel.hhslogindashboard.username)
+        .query(`select password from hhslogindashboard where username=@username`);
+        let resp1 = pullrecord1.recordset
+         if (pullrecord1.recordset== resp1)
+      return {
+        status: "Success",
+        Message: "Login Succesfully",
+      }
+      else
+      {
+        return {
+          status:"Error"
+        }
+
+      }
+      
+ }
 
 
 //hhsregistration
