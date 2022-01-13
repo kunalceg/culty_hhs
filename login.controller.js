@@ -12,6 +12,15 @@ exports.cultyvatelogin = async (request, response, next) => {
         message:"Login Successfully"
       });
     } 
+    else
+    {
+        response.status(200).json({ 
+        status:"Error",
+        Message:" Please check username and password"
+      
+    });
+}
+
     
   } catch (err) {
     response.status(200).json({

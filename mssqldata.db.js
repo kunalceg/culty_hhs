@@ -44,17 +44,18 @@ exports.dbhhslogin = async function (clientModel){
   
         let pullrecord1 = await selectReq1
         .input("username",DB.VarChar,clientModel.hhslogindashboard.username)
-        .query(`select password from hhslogindashboard where username=@username`);
-        let resp1 = pullrecord1.recordset
-         if (pullrecord1.recordset== resp1)
-      return {
+        .input("password",DB.VarChar,clientModel.hhslogindashboard.password)
+        .query(`select * from hhslogindashboard where username=@username and password=@password`);
+        if(pullrecord1.recordset.length>0)
+        return {
         status: "Success",
         Message: "Login Succesfully",
       }
       else
       {
         return {
-          status:"Error"
+          status:"Error",
+          Message:" Please check username and password"
         }
 
       }
