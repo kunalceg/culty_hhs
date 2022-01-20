@@ -1,6 +1,6 @@
 const DBMODEL = require("../database/db.js").DBMODEL2;
 
-exports.cultyvatelogin = async (request, response, next) => {
+exports.cultyvatehhslogin = async (request, response, next) => {
   let clientModel = request.body
   console.log(" Save User Info ");
   try {

@@ -117,7 +117,7 @@ exports.dbhhcalibration = async function (clientModel) {
   let selectReq1 = await pool.request();
   
    let resp = await selectReq1
-   .input("deviceid",DB.Int,clientModel.hhssoilconfig.deviceid)
+   .input("deviceid",DB.VarChar,clientModel.hhssoilconfig.deviceid)
    .query("Select * from hhssoilconfig where deviceid=@deviceid");
         if (resp.recordset.length > 0) {
       return {
@@ -292,7 +292,7 @@ exports.dbhhscontactusinfo = async function (clientModel){
 
 //help
 
-exports.dbhhshelpinfo = async function (clientModel){
+exports.dbhhshelp = async function (clientModel){
   let pool = await poolPromise;
   let selectReq1 = await pool.request();
  
