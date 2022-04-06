@@ -248,6 +248,113 @@ exports.dbhhssoilc = async function (clientModel){
       };
  }
 
+//DefaultSoilchart
+
+exports.dbdsoilchart = async function (clientModel){
+  let pool = await poolPromise;
+  let selectReq = await pool.request();
+  
+        let pullrecord1 = await selectReq
+        .query(`Select *from hhsdefaultsoilconfig as json`);
+        console.log(pullrecord1.recordset)
+
+        let result = {
+          soil : pullrecord1.recordset
+        };
+      return {
+        status: "Success",
+          data:result
+      };
+ }
+//Registration chart
+
+exports.dbregchart = async function (clientModel){
+  let pool = await poolPromise;
+  let selectReq = await pool.request();
+  
+        let pullrecord1 = await selectReq
+        .query(`SELECT
+        convert(date,createdate) as 'Date',
+        COUNT(Fullname)name,COUNT(deviceid)id
+        FROM hhsregistration
+        GROUP BY convert(date,createdate)`);
+        console.log(pullrecord1.recordset)
+
+        let result = {
+          reg : pullrecord1.recordset
+        };
+      return {
+        status: "Success",
+          data:result
+      };
+ }
+// Farmer Details Chart
+
+exports.dbfarmchart = async function (clientModel){
+  let pool = await poolPromise;
+  let selectReq = await pool.request();
+  
+        let pullrecord1 = await selectReq
+        .query(`select CONVERT(date,createddate)Date,
+        COUNT(farmername)name
+        from hhsfarmerdetails
+        group by convert(date,createddate),deviceid`);
+        console.log(pullrecord1.recordset)
+
+        let result = {
+          farmer : pullrecord1.recordset
+        };
+      return {
+        status: "Success",
+          data:result
+      };
+ }
+
+// Location based farmer 
+
+exports.dblocation = async function (clientModel){
+  let pool = await poolPromise;
+  let selectReq = await pool.request();
+  
+        let pullrecord1 = await selectReq
+        .query(`select COUNT(farmername)name,
+        COUNT(distinct deviceid)id, 
+        latitude,longitude,deviceid
+        from hhsfarmerdetails group by 
+        latitude,longitude,deviceid`);
+        console.log(pullrecord1.recordset)
+
+        let result = {
+          farmer : pullrecord1.recordset
+        };
+      return {
+        status: "Success",
+          data:result
+      };
+ }
+//soilconfigChart
+
+exports.dbsoilconfigChart = async function (clientModel){
+  let pool = await poolPromise;
+  let selectReq = await pool.request();
+  
+        let pullrecord1 = await selectReq
+        .query(`select COUNT(deviceid)soil,
+        deviceid from hhssoilconfig group by deviceid`);
+        console.log(pullrecord1.recordset)
+
+        let result = {
+          farmer : pullrecord1.recordset
+        };
+      return {
+        status: "Success",
+          data:result
+      };
+ }
+
+
+
+
 //hhscontactusinfo
 
 exports.dbhhscontactusinfo = async function (clientModel){
